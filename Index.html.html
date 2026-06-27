@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta author="Samuel Kauã">
+    <meta description="Pizzaria Jabami o Site foi feito para um Trabalho Academico, onde o objetivo era criar um site de uma pizzaria, onde o cliente pudesse ver o cardápio, e se cadastrar para receber promoções, além de ter um link para o WhatsApp para fazer pedidos.">
+    <meta keywords="Site para estudos cademicos, pizzaria, cardápio, promoções, WhatsApp">
+    <title>Pizzaria Jabami</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --black: #0d0d0d;
+            --cream: #f5f0e8;
+            --red: #c0392b;
+            --red-dark: #922b21;
+            --gold: #c9a84c;
+            --white: #fdfaf5;
+            --shadow-heavy: 8px 8px 0px var(--black);
+            --shadow-red: 8px 8px 0px var(--red);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Crimson Pro', Georgia, serif;
+            background-color: var(--cream);
+            color: var(--black);
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 999;
+            opacity: 0.4;
+        }
+
+        header {
+            background-color: var(--black);
+            color: var(--cream);
+            padding: 60px 40px 50px;
+            position: relative;
+            overflow: hidden;
+            border-bottom: 4px solid var(--red);
+        }
+
+        header::after {
+            display: none;
+        }
+
+        @keyframes floatEmoji {
+            0%, 100% { transform: rotate(-15deg) translateY(0); }
+            50% { transform: rotate(-12deg) translateY(-20px); }
+        }
+
+        .header-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            text-align: center;
+            animation: slideDown 0.8s ease both;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .header-tag {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.75rem;
+            letter-spacing: 4px;
+            color: var(--gold);
+            text-transform: uppercase;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        header h1 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(4rem, 10vw, 8rem);
+            line-height: 0.9;
+            letter-spacing: 3px;
+            color: var(--white);
+        }
+
+        header h1 span {
+            color: var(--red);
+        }
+
+        .header-quote {
+            font-family: 'Crimson Pro', serif;
+            font-style: italic;
+            font-size: 1.15rem;
+            color: #aaa;
+            margin-top: 20px;
+            max-width: 560px;
+            line-height: 1.7;
+            border-left: none;
+            border-top: 3px solid var(--red);
+            padding-left: 0;
+            padding-top: 16px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 40px 40px 10px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .divider-line {
+            flex: 1;
+            height: 2px;
+            background: var(--black);
+        }
+
+        .divider-icon {
+            font-size: 1.4rem;
+        }
+
+        .menu-section {
+            padding: 10px 40px 60px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .section-header h2 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            letter-spacing: 2px;
+        }
+
+        .section-header .label {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.7rem;
+            letter-spacing: 3px;
+            color: var(--red);
+            text-transform: uppercase;
+            padding: 4px 10px;
+            border: 1.5px solid var(--red);
+        }
+
+        .pizza-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 28px;
+        }
+
+        .pizza-card {
+            background: var(--white);
+            border: 3px solid var(--black);
+            box-shadow: var(--shadow-heavy);
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+            animation: fadeUp 0.6s ease both;
+        }
+
+        .pizza-card:nth-child(1) { animation-delay: 0.1s; }
+        .pizza-card:nth-child(2) { animation-delay: 0.25s; }
+        .pizza-card:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .pizza-card:hover {
+            transform: translate(-5px, -5px);
+            box-shadow: 13px 13px 0px var(--black);
+        }
+
+        .card-img-wrap {
+            overflow: hidden;
+            border-bottom: 3px solid var(--black);
+            height: 240px;
+        }
+
+        .card-img-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.5s ease;
+        }
+
+        .pizza-card:hover .card-img-wrap img {
+            transform: scale(1.06);
+        }
+
+        .card-body {
+            padding: 22px 24px 26px;
+        }
+
+        .card-body h3 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.8rem;
+            letter-spacing: 1.5px;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+
+        .card-body ul {
+            list-style: none;
+            margin-bottom: 16px;
+        }
+
+        .card-body ul li {
+            font-size: 1rem;
+            padding: 3px 0;
+            color: #555;
+        }
+
+        .card-body ul li::before {
+            content: '— ';
+            color: var(--red);
+            font-weight: 700;
+        }
+
+        .card-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 2px dashed #ccc;
+        }
+
+        .price {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.9rem;
+            color: var(--red);
+            letter-spacing: 1px;
+        }
+
+        .btn-cart {
+            display: inline-block;
+            padding: 10px 20px;
+            background: var(--black);
+            color: var(--white);
+            text-decoration: none;
+            font-family: 'DM Mono', monospace;
+            font-size: 0.72rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            border: 2px solid var(--black);
+            transition: background 0.2s, color 0.2s, transform 0.2s, box-shadow 0.2s;
+            box-shadow: 3px 3px 0 var(--red);
+        }
+
+        .btn-cart:hover {
+            background: var(--red);
+            border-color: var(--red);
+            transform: translate(-2px, -2px);
+            box-shadow: 5px 5px 0 var(--black);
+        }
+
+        footer {
+            background: var(--black);
+            color: var(--cream);
+            padding: 60px 40px;
+            border-top: 4px solid var(--red);
+        }
+
+        .footer-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: start;
+        }
+
+        @media (max-width: 700px) {
+            .footer-inner { grid-template-columns: 1fr; gap: 40px; }
+        }
+
+        .signup-block h3 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 2rem;
+            letter-spacing: 2px;
+            margin-bottom: 6px;
+        }
+
+        .signup-block p {
+            font-size: 0.95rem;
+            color: #888;
+            margin-bottom: 24px;
+            font-style: italic;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            font-family: 'DM Mono', monospace;
+            font-size: 0.7rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 6px;
+        }
+
+        .form-group input {
+            width: 100%;
+            background: #1a1a1a;
+            border: 2px solid #333;
+            color: var(--cream);
+            padding: 12px 14px;
+            font-family: 'Crimson Pro', serif;
+            font-size: 1rem;
+            transition: border-color 0.2s;
+            outline: none;
+        }
+
+        .form-group input:focus {
+            border-color: var(--red);
+        }
+
+        .btn-submit {
+            width: 100%;
+            margin-top: 8px;
+            padding: 14px;
+            background: var(--red);
+            color: var(--white);
+            border: 2px solid var(--red);
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.2rem;
+            letter-spacing: 3px;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+            box-shadow: 4px 4px 0 #fff2;
+        }
+
+        .btn-submit:hover {
+            background: var(--red-dark);
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0 #fff2;
+        }
+
+        .contact-block h3 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 2rem;
+            letter-spacing: 2px;
+            margin-bottom: 6px;
+        }
+
+        .contact-block p {
+            font-size: 0.95rem;
+            color: #888;
+            margin-bottom: 24px;
+            font-style: italic;
+        }
+
+        .whatsapp-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 28px;
+            background: #25d366;
+            color: var(--black);
+            text-decoration: none;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.1rem;
+            letter-spacing: 2px;
+            border: 3px solid var(--white);
+            box-shadow: 5px 5px 0 var(--white);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .whatsapp-btn:hover {
+            transform: translate(-3px, -3px);
+            box-shadow: 8px 8px 0 var(--white);
+        }
+
+        .whatsapp-btn svg {
+            width: 22px;
+            height: 22px;
+            fill: var(--black);
+        }
+
+        .footer-meta {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #222;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'DM Mono', monospace;
+            font-size: 0.72rem;
+            color: #555;
+            letter-spacing: 1px;
+        }
+
+        .footer-full {
+            grid-column: 1 / -1;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-inner">
+            <span class="header-tag">Desde 2021 · Natal, RN</span>
+            <h1>Pizzaria<br><span>Jabami</span></h1>
+            <p class="header-quote">
+                Qualquer um pode cozinhar. Um tempero que atravessa gerações,
+                legado de família e criando memórias inesquecíveis.
+            </p>
+        </div>
+    </header>
+
+    <nav>
+        <div style="max-width: 1200px; margin: 0 auto; padding: 20px 40px;">
+            <a href="#menu" style="color: var(--red); text-decoration: none; font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; letter-spacing: 2px;">Ver Cardápio</a>
+        </div>
+    </nav>
+
+    <main>
+        <div class="divider">
+            <div class="divider-line"></div>
+            <span class="divider-icon">✦</span>
+            <div class="divider-line"></div>
+        </div>
+
+        <section id="menu" class="menu-section">
+            <div class="section-header">
+                <h2>Cardápio</h2>
+                <span class="label">Seleção da Casa</span>
+            </div>
+
+            <div class="pizza-grid">
+                <div class="pizza-card">
+                    <div class="card-img-wrap">
+                        <img src="pepperoni.jpeg" alt="Pizza de Pepperoni">
+                    </div>
+                    <div class="card-body">
+                        <h3>Pizza de Pepperoni</h3>
+                        <ul>
+                            <li>Molho de tomate</li>
+                            <li>Muçarela</li>
+                            <li>Pepperoni fatiado</li>
+                        </ul>
+                        <div class="card-footer">
+                            <span class="price">R$ 45,00</span>
+                            <a href="#" class="btn-cart">+ Carrinho</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pizza-card">
+                    <div class="card-img-wrap">
+                        <img src="mussarela.png" alt="Pizza de Muçarela">
+                    </div>
+                    <div class="card-body">
+                        <h3>Pizza de Muçarela</h3>
+                        <ul>
+                            <li>Molho de tomate</li>
+                            <li>Muçarela premium</li>
+                            <li>Orégano</li>
+                        </ul>
+                        <div class="card-footer">
+                            <span class="price">R$ 39,90</span>
+                            <a href="#" class="btn-cart">+ Carrinho</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pizza-card">
+                    <div class="card-img-wrap">
+                        <img src="marguerita.jpeg" alt="Pizza Marguerita">
+                    </div>
+                    <div class="card-body">
+                        <h3>Pizza Marguerita</h3>
+                        <ul>
+                            <li>Molho de tomate</li>
+                            <li>Muçarela</li>
+                            <li>Manjericão fresco</li>
+                        </ul>
+                        <div class="card-footer">
+                            <span class="price">R$ 42,00</span>
+                            <a href="#" class="btn-cart">+ Carrinho</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-inner">
+            <div class="signup-block">
+                <h3>Receba Promoções</h3>
+                <p>Cadastre-se e fique por dentro das ofertas exclusivas.</p>
+                <form action="salvar.php" method="POST">
+                    <div class="form-group">
+                        <label for="nome">Nome</label>
+                        <input type="text" id="nome" name="nome" placeholder="Seu nome completo">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">E-mail</label>
+                        <input type="email" id="email" name="email" placeholder="seu@email.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="celular">Celular</label>
+                        <input type="text" id="celular" name="celular" placeholder="(84) 99999-9999">
+                    </div>
+                    <button type="submit" class="btn-submit">Salvar Cadastro</button>
+                </form>
+            </div>
+
+            <div class="contact-block">
+                <h3>Faça seu Pedido</h3>
+                <p>Atendemos pelo WhatsApp. Rápido, fácil e sem complicação.</p>
+                <a href="https://wa.me" target="_blank" class="whatsapp-btn">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+                    </svg>
+                    Pedir pelo WhatsApp
+                </a>
+
+                <div class="footer-meta">
+                    <span>Natal, RN</span>
+                    <span>·</span>
+                    <span>Aberto todos os dias</span>
+                    <span>·</span>
+                    <span>18h–23h</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>
